@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name              KeepChatGPT
 // @description       让我们在使用ChatGPT过程中更高效、更顺畅，完美解决ChatGPT网络错误，不再频繁地刷新网页，足足省去10个多余的步骤。还可以取消后台监管审计。解决了这几类报错: (1) NetworkError when attempting to fetch resource. (2) Something went wrong. If this issue persists please contact us through our help center at help.openai.com. (3) This content may violate our content policy. If you believe this to be in error, please submit your feedback — your input will aid our research in this area. (4) Conversation not found.
-// @version           9.8
+// @version           8.3
 // @author            xcanwin
 // @namespace         https://github.com/xcanwin/KeepChatGPT/
 // @supportURL        https://github.com/xcanwin/KeepChatGPT/
@@ -57,56 +57,56 @@
 (function() {
     'use strict';
 
-    const $ = (Selector, el) => (el || document).querySelector(Selector);
-    const $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
+    var $ = (Selector, el) => (el || document).querySelector(Selector);
+    var $$ = (Selector, el) => (el || document).querySelectorAll(Selector);
 
-    const tl = function(s) {
-        let lang = `
+    var tl = function(s) {
+        var lang = `
 {
-    "index": {"暗色主题": "dm", "显示调试": "sd", "取消审计": "cm", "取消动画": "ca", "关于": "ab", "建议间隔30秒": "si", "调整间隔": "mi", "检查更新": "cu", "当前版本": "cv", "发现最新版": "dl", "已是最新版": "lv"},
+    "index": {"暗色主题": "dm", "浅色主题": "lm", "显示调试": "sd", "取消审计": "cm", "关于": "ab"},
     "local": {
-"ar": {"dm": "الوضع الداكن", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ca": "إلغاء الرسوم المتحركة", "ab": "حول", "si": "اقتراح فاصل زمني 30 ثانية", "mi": "تعديل الفاصل", "cu": "التحقق من التحديثات", "cv": "الإصدار الحالي" ، "dl": "اكتشف أحدث إصدار" ، "lv": "أحدث إصدار"},
-"bg": {"dm": "Тъмна тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ca": "Отмяна на анимацията", "ab": "За", "si": "Предложете интервал от 30 секунди", "mi": "Промяна на интервала", "cu": "Проверка на актуализации"},
-"cs": {"dm": "Tmavý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ca": "Zrušit animaci", "ab": "O", "si": "Navrhnout interval 30 sekund", "mi": "Upravit interval", "cu": "Kontrola aktualizací"},
-"da": {"dm": "Mørk tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ca": "Annuller animation", "ab": "Om", "si": "Forslag interval på 30 sekunder", "mi": "Ændre interval", "cu": "Tjek for opdateringer"},
-"de": {"dm": "Dunkler Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ca": "Animation abbrechen", "ab": "Über", "si": "Vorschlag für Intervall von 30 Sekunden", "mi": "Intervall bearbeiten", "cu": "Überprüfung auf Updates", "cv": "Aktuelle Version", "dl": "Entdecken Sie die neueste Version", "lv": "ist die neueste Version"},
-"el": {"dm": "Σκοτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ca": "Ακύρωση κινούμενων σχεδίων", "ab": "Σχετικά με", "si": "Προτείνετε διάστημα 30 δευτερολέπτων", "mi": "Τροποποίηση διαστήματος", "cu": "Έλεγχος ενημερώσεων"},
-"en": {"dm": "Dark mode", "sd": "Show debugging", "cm": "Cancel audit", "ca": "Cancel animation", "ab": "About", "si": "Suggest interval of 30 seconds; The author usually sets 150", "mi": "Modify interval", "cu": "Check for updates", "cv": "Current version", "dl": "Discover the latest version", "lv": "is the latest version"},
-"eo": {"dm": "Malhela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ca": "Nuligi animacion", "ab": "Pri", "si": "Sugesti intervalon de 30 sekundoj", "mi": "Modifi intervalon", "cu": "Kontroli ĝisdatigojn"},
-"es": {"dm": "Modo oscuro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ca": "Cancelar animación", "ab": "Acerca de", "si": "Sugerir un intervalo de 30 segundos", "mi": "Modificar intervalo", "cu": "Comprobar actualizaciones", "cv": "Versión actual", "dl": "Descubre la última versión", "lv": "es la última versión"},
-"fi": {"dm": "Tumma tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ca": "Peruuta animaatio", "ab": "Tietoa", "si": "Ehdota 30 sekunnin väliaikaa", "mi": "Muokkaa väliä", "cu": "Tarkista päivitykset"},
-"fr": {"dm": "Mode sombre", "sd": "Afficher le débogage", "cm": "Annuler l'audit", "ca": "Annuler l'animation", "ab": "À propos de", "si": "Suggérer un intervalle de 30 secondes", "mi": "Modifier l'intervalle", "cu": "Vérifier les mises à jour", "cv": "Version actuelle", "dl": "Découvrir la dernière version", "lv": "est la dernière version"},
-"fr-CA": {"dm": "Mode nuit", "sd": "Afficher le débogage", "cm": "Annuler la vérification", "ca": "Annuler l'animation", "ab": "À propos de", "si": "Suggérer un intervalle de 30 secondes", "mi": "Modifier l'intervalle", "cu": "Vérifier les mises à jour", "cv": "Version actuelle", "dl": "Découvrir la dernière version", "lv": "est la dernière version"},
-"he": {"dm": "מצב כהה", "sd": "הצגת התיקון", "cm": "ביטול ביקורת", "ca": "בטל אנימציה", "ab": "אודות", "si": "הצע מרווח של 30 שניות", "mi": "שינוי מרווח", "cu": "בדיקת עדכונים"},
-"hu": {"dm": "Sötét mód", "sd": "Hibakeresés mutatása", "cm": "Ellenőrzés megszüntetése", "ca": "Animáció törlése", "ab": "Rólunk", "si": "Javaslat 30 másodperces időközre", "mi": "Időköz módosítása", "cu": "Frissítések keresése"},
-"id": {"dm": "Mode gelap", "sd": "Tampilkan debugging", "cm": "Batalkan audit", "ca": "Batalkan animasi", "ab": "Tentang", "si": "Sarankan interval 30 detik", "mi": "Modifikasi interval", "cu": "Periksa Pembaruan"},
-"it": {"dm": "Modalità scura", "sd": "Mostra debug", "cm": "Annulla verifica", "ca": "Annulla animazione", "ab": "Riguardo a", "si": "Suggerisci un intervallo di 30 secondi", "mi": "Modifica intervallo", "cu": "Verifica aggiornamenti", "cv": "Versione attuale", "dl": "Scopri l'ultima versione", "lv": "è l'ultima versione"},
-"ja": {"dm": "ダークモード", "sd": "デバッグを表示", "cm": "監査をキャンセル", "ca": "アニメーションのキャンセル", "ab": "について", "si": "30秒間隔を提案する", "mi": "間隔を変更する", "cu": "更新をチェックする", "cv": "現在のバージョン", "dl": "最新バージョンを発見する", "lv": "最新バージョンです"},
-"ka": {"dm": "ბნელი რეჟიმი", "sd": "გამოჩენა დებაგი", "cm": "ანულირება აუდიტი", "ca": "ანიმაციის გაუქმება", "ab": "შესახებ", "si": "30 წამის ინტერვალის შეტანა", "mi": "ინტერვალის შეცვლა", "cu": "განახლებების შემოწმება"},
-"ko": {"dm": "다크 모드", "sd": "디버깅 표시", "cm": "감사 취소", "ca": "애니메이션 취소", "ab": "관하여", "si": "30초 간격 건의", "mi": "간격 수정", "cu": "업데이트 확인", "cv": "현재 버전", "dl": "최신 버전 찾기", "lv": "최신 버전입니다."},
-"nb": {"dm": "Mørk modus", "sd": "Vis feilsøking", "cm": "Avbryt revisjonen", "ca": "Avbryt animasjon", "ab": "Om", "si": "Forslag om et intervall på 30 sekunder", "mi": "Endre intervall", "cu": "Sjekk etter oppdateringer"},
-"nl": {"dm": "Donkere modus", "sd": "Foutopsporing weergeven", "cm": "Controle annuleren", "ca": "Animatie annuleren", "ab": "Over", "si": "Stel een interval van 30 seconden voor", "mi": "Interval wijzigen", "cu": "Controleren op updates"},
-"pl": {"dm": "Tryb ciemny", "sd": "Pokaż debugowanie", "cm": "Anuluj audyt", "ca": "Anuluj animację", "ab": "O", "si": "Zasugeruj interwał 30 sekund", "mi": "Zmień interwał", "cu": "Sprawdź aktualizacje"},
-"pt-BR": {"dm": "Modo escuro", "sd": "Mostrar depuração", "cm": "Cancelar auditoria", "ca": "Cancelar animação", "ab": "Sobre", "si": "Sugira um intervalo de 30 segundos", "mi": "Modificar intervalo", "cu": "Verificar atualizações"},
-"ro": {"dm": "Mod întunecat", "sd": "Afișare depanare", "cm": "Anulare audit", "ca": "Anulare animație", "ab": "Despre", "si": "Sugerați un interval de 30 secunde", "mi": "Modificați intervalul", "cu": "Verifică actualizări"},
-"ru": {"dm": "Темный режим", "sd": "Показать отладку", "cm": "Отменить аудит", "ca": "Отменить анимацию", "ab": "О", "si": "Предложить интервал в 30 секунд", "mi": "Изменить интервал", "cu": "Проверить обновления"},
-"sk": {"dm": "Tmavý režim", "sd": "Zobraziť ladenie", "cm": "Zrušiť audit", "ca": "Zrušiť animáciu", "ab": "O", "si": "Navrhnúť interval 30 sekúnd", "mi": "Zmena intervalu", "cu": "Kontrola aktualizácií"},
-"sr": {"dm": "Тамни режим", "sd": "Прикажи отклањање грешака", "cm": "Откажи ревизију", "ca": "Откажи анимацију", "ab": "О", "si": "Predložiti interval od 30 sekundi", "mi": "Измена интервала", "cu": "Provera ažuriranja"},
-"sv": {"dm": "Mörkt läge", "sd": "Visa felsökning", "cm": "Avbryt revision", "ca": "Avbryt animation", "ab": "Om", "si": "Föreslå intervall på 30 sekunder", "mi": "Ändra intervall", "cu": "Kontrollera uppdateringar"},
-"th": {"dm": "โหมดมืด", "sd": "แสดงการแก้ไขข้อผิดพลาด", "cm": "ยกเลิกการตรวจสอบ", "ca": "ยกเลิกการเคลื่อนไหว", "ab": "เกี่ยวกับ", "si": "เสนอช่วงเวลา 30 วินาที", "mi": "แก้ไขระยะห่าง", "cu": "ตรวจสอบการอัปเดต"},
-"tr": {"dm": "Karanlık mod", "sd": "Hata ayıklama göster", "cm": "Denetimi İptal Et", "ca": "Animasyonu iptal et", "ab": "Hakkında", "si": "30 saniyelik aralık önerin", "mi": "Aralığı değiştir", "cu": "Güncelleştirmeleri kontrol et"},
-"uk": {"dm": "Темний режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ca": "Скасувати анімацію", "ab": "Про", "si": "Запропонуйте інтервал у 30 секунд", "mi": "Змінити інтервал", "cu": "Перевірити оновлення"},
-"ug": {"dm": "تېما كۆرسىتىش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ca": "ئېنىماتىكىنى بىكار قىلىش", "ab": "ئۇچۇرلىق", "si": "30 سىكونتلىك ئارىلىقنى سۇنۇشتۇرۇش", "mi": "ئارىلىق ئۆزگەرتىش", "cu": "يېڭىلانما كۆزەت"},
-"vi": {"dm": "Chế độ tối", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ca": "Hủy hoạt hình", "ab": "Về", "si": "Đề xuất khoảng thời gian 30 giây", "mi": "Sửa khoảng cách", "cu": "Kiểm tra cập nhật"},
-"zh-CN": {"dm": "暗色主题", "sd": "显示调试", "cm": "取消审计", "ca": "取消动画", "ab": "关于", "si": "建议间隔30秒以上，作者平时设置的是150", "mi": "调整间隔", "cu": "检查更新"},
-"zh-TW": {"dm": "暗黑模式", "sd": "顯示調試", "cm": "取消稽核", "ca": "取消動畫", "ab": "關於", "si": "建議間隔30秒", "mi": "調整間隔", "cu": "檢查更新"}
+"ar": {"dm": "الوضع الداكن", "lm": "وضع فاتح", "sd": "إظهار التصحيح", "cm": "إلغاء التدقيق", "ab": "حول"},
+"bg": {"dm": "Тъмна тема", "lm": "Светла тема", "sd": "Показване на отстраняване на грешки", "cm": "Отказ от одит", "ab": "За"},
+"cs": {"dm": "Tmavý režim", "lm": "Světlý režim", "sd": "Zobrazit ladění", "cm": "Zrušení auditu", "ab": "O"},
+"da": {"dm": "Mørk tilstand", "lm": "Lys tilstand", "sd": "Vis fejlfinding", "cm": "Annuller revision", "ab": "Om"},
+"de": {"dm": "Dunkler Modus", "lm": "Heller Modus", "sd": "Fehlerbehebung anzeigen", "cm": "Prüfung abbrechen", "ab": "Über"},
+"el": {"dm": "Σκοτεινή θεματολογία", "lm": "Φωτεινή θεματολογία", "sd": "Εμφάνιση αποσφαλμάτωσης", "cm": "Ακύρωση ελέγχου", "ab": "Σχετικά με"},
+"en": {"dm": "Dark mode", "lm": "Light mode", "sd": "Show debugging", "cm": "Cancel audit", "ab": "About"},
+"eo": {"dm": "Malhela moduso", "lm": "Hela moduso", "sd": "Montri depuradon", "cm": "Nuligi kontroli", "ab": "Pri"},
+"es": {"dm": "Modo oscuro", "lm": "Modo claro", "sd": "Mostrar depuración", "cm": "Cancelar auditoría", "ab": "Acerca de"},
+"fi": {"dm": "Tumma tila", "lm": "Vaalea tila", "sd": "Näytä virheenkorjaus", "cm": "Peruuta tarkistus", "ab": "Tietoa"},
+"fr": {"dm": "Mode sombre", "lm": "Mode clair", "sd": "Afficher le débogage", "cm": "Annuler l'audit", "ab": "À propos de"},
+"fr-CA": {"dm": "Mode nuit", "lm": "Mode jour", "sd": "Afficher le débogage", "cm": "Annuler la vérification", "ab": "À propos de"},
+"he": {"dm": "מצב כהה", "lm": "מצב בהיר", "sd": "הצגת התיקון", "cm": "ביטול ביקורת", "ab": "אודות"},
+"hu": {"dm": "Sötét mód", "lm": "Világos mód", "sd": "Hibakeresés mutatása", "cm": "Ellenőrzés megszüntetése", "ab": "Rólunk"},
+"id": {"dm": "Mode gelap", "lm": "Mode terang", "sd": "Tampilkan debugging", "cm": "Batalkan audit", "ab": "Tentang"},
+"it": {"dm": "Modalità scura", "lm": "Modalità chiara", "sd": "Mostra debug", "cm": "Annulla verifica", "ab": "Riguardo a"},
+"ja": {"dm": "ダークモード", "lm": "ライトモード", "sd": "デバッグを表示", "cm": "監査をキャンセル", "ab": "について"},
+"ka": {"dm": "ბნელი რეჟიმი", "lm": "ნათელი რეჟიმი", "sd": "გამოჩენა დებაგი", "cm": "ანულირება აუდიტი", "ab": "შესახებ"},
+"ko": {"dm": "다크 모드", "lm": "라이트 모드", "sd": "디버깅 표시", "cm": "감사 취소", "ab": "관하여"},
+"nb": {"dm": "Mørk modus", "lm": "Lys modus", "sd": "Vis feilsøking", "cm": "Avbryt revisjonen", "ab": "Om"},
+"nl": {"dm": "Donkere modus", "lm": "Lichte modus", "sd": "Foutopsporing weergeven", "cm": "Controle annuleren", "ab": "Over"},
+"pl": {"dm": "Tryb ciemny", "lm": "Tryb jasny", "sd": "Pokaż debugowanie", "cm": "Anuluj audyt", "ab": "O"},
+"pt-BR": {"dm": "Modo escuro", "lm": "Modo claro", "sd": "Mostrar depuração", "cm": "Cancelar auditoria", "ab": "Sobre"},
+"ro": {"dm": "Mod întunecat", "lm": "Mod luminos", "sd": "Afișare depanare", "cm": "Anulare audit", "ab": "Despre"},
+"ru": {"dm": "Темный режим", "lm": "Светлый режим", "sd": "Показать отладку", "cm": "Отменить аудит", "ab": "О"},
+"sk": {"dm": "Tmavý režim", "lm": "Svetlý režim", "sd": "Zobraziť ladenie", "cm": "Zrušiť audit", "ab": "O"},
+"sr": {"dm": "Тамни режим", "lm": "Светла тема", "sd": "Прикажи отклањање грешака", "cm": "Откажи ревизију", "ab": "О"},
+"sv": {"dm": "Mörkt läge", "lm": "Ljust läge", "sd": "Visa felsökning", "cm": "Avbryt revision", "ab": "Om"},
+"th": {"dm": "โหมดมืด", "lm": "โหมดสว่าง", "sd": "แสดงการแก้ไขข้อผิดพลาด", "cm": "ยกเลิกการตรวจสอบ", "ab": "เกี่ยวกับ"},
+"tr": {"dm": "Karanlık mod", "lm": "Aydınlık mod", "sd": "Hata ayıklama göster", "cm": "Denetimi İptal Et", "ab": "Hakkında"},
+"uk": {"dm": "Темний режим", "lm": "Світлий режим", "sd": "Показати налагодження", "cm": "Скасувати аудит", "ab": "Про"},
+"ug": {"dm": "تېما كۆرسىتىش", "lm": "ئاچقۇچ كۆرۈنۈش", "sd": "كۆرسەتكەن يۇقىرىلاش", "cm": "ئەمەلدىن قالدۇرۇش", "ab": "ئۇچۇرلىق"},
+"vi": {"dm": "Chế độ tối", "lm": "Chế độ sáng", "sd": "Hiển thị gỡ lỗi", "cm": "Hủy đánh giá", "ab": "Về"},
+"zh-CN": {"dm": "暗色主题", "lm": "浅色主题", "sd": "显示调试", "cm": "取消审计", "ab": "关于"},
+"zh-TW": {"dm": "暗黑模式", "lm": "淺色主題", "sd": "顯示調試", "cm": "取消稽核", "ab": "關於"}
     }
 }
 `;
-        let r, nl;
+        var i, r, nl;
         try {
             lang = JSON.parse(lang);
-            const i = lang.index[s];
+            i = lang.index[s];
             nl = navigator.language;
             if (nl in lang.local) {
                 r = lang.local[nl][i];
@@ -120,42 +120,32 @@
         return r;
     };
 
-    const sv = function(key, value = "") {
+    var sv = function(key, value = "") {
         GM_setValue(key, value);
     };
 
-    const gv = function(key, value = "") {
+    var gv = function(key, value = "") {
         return GM_getValue(key, value);
     };
 
-    const formatDate = function(d) {
+    var formatDate = function(d) {
         return (new Date(d)).toLocaleString();
     };
 
-    const formatJson = function(d) {
-        try {
-            const j = JSON.parse(d);
-            return `<pre>${JSON.stringify(j, null, 2)}</pre>`;
-        } catch (e) {
-            return d;
-        }
-    };
-
-    const setIfr = function(u = "") {
+    var setIfr = function(u = "") {
         if ($("#xcanwin")==null) {
-            const nIfr = document.createElement('iframe');
+            var nIfr = document.createElement('iframe');
             nIfr.id = "xcanwin";
             nIfr.style = `height: 0px; width: 100%;`;
             if (u) {
                 nIfr.src = u;
             }
             nIfr.onload = function() {
-                const nIfrText = $("#xcanwin").contentWindow.document.documentElement.innerText;
+                var nIfrText = $("#xcanwin").contentWindow.document.documentElement.innerText;
                 try {
                     $("#xcanwin").contentWindow.document.documentElement.style = `background: #FCF3CF; height: 360px; width: 1080px; overflow; auto;`;
                     if (nIfrText.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: IFRAME: Expire date: ${formatDate(JSON.parse(nIfrText).expires)}`);
-                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(nIfrText);
                     } else if (nIfrText.match(/Please stand by|while we are checking your browser|Please turn JavaScript on|Please enable Cookies|reload the page/)) {
                         console.log(`KeepChatGPT: IFRAME: BypassCF`);
                     }
@@ -171,14 +161,14 @@
         }
     };
 
-    const keepChat = function() {
+    var keepChat = function() {
         fetch(u).then((response) => {
             response.text().then((data) => {
                 try {
-                    const contentType = response.headers.get('Content-Type');
+                    var contentType = response.headers.get('Content-Type');
                     if (contentType.indexOf("application/json") > -1 && response.status !== 403 && data.indexOf(`"expires":"`) > -1) {
                         console.log(`KeepChatGPT: FETCH: Expire date: ${formatDate(JSON.parse(data).expires)}`);
-                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = formatJson(data);
+                        $("#xcanwin").contentWindow.document.documentElement.innerHTML = data;
                     } else {
                         setIfr(u);
                     }
@@ -190,70 +180,28 @@
         });
     }
 
-    const ncheckbox = function() {
-        const nsvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    var ncheckbox = function() {
+        var nsvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         nsvg.setAttribute("viewBox", "0 0 100 30");
         nsvg.classList.add("checkbutton");
         nsvg.innerHTML = `<g fill="none" fill-rule="evenodd"><path fill="#E3E3E3" d="M0 15C0 6.716 6.716 0 15 0h14c8.284 0 15 6.716 15 15s-6.716 15-15 15H15C6.716 30 0 23.284 0 15z"/><circle fill="#FFF" cx="15" cy="15" r="13"/></g>`;
         return nsvg.cloneNode(true);
     };
 
-    const ndialog = function(title = 'KeepChatGPT', content = '', buttonvalue = 'OK', buttonfun = function(t){}, inputtype = 'br', inputvalue = '') {
-        const ndivalert = document.createElement('div');
-        ndivalert.setAttribute("class", "kdialog relative z-50");
-        ndivalert.innerHTML = `
-<div class="fixed inset-0 bg-gray-500/90"></div>
-<div class="fixed inset-0 overflow-y-auto z-50">
-  <div class="flex items-end justify-center min-h-full p-4 sm:items-center sm:p-0 text-center">
-    <div class="bg-white dark:bg-gray-900 rounded-lg sm:max-w-lg sm:p-6 text-left">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="flex items-center justify-between">
-            <h3 class="dark:text-gray-200 text-gray-900 text-lg">${title}</h3>
-            <p class="kdialogclose" style="cursor: pointer;">X</p>
-          </div>
-          <p class="dark:text-gray-100 mt-2 text-gray-500 text-sm" style="margin-bottom: 10px;">${content}</p>
-          <div class="md:py-3 md:pl-4 border border-black/10 bg-white dark:border-gray-900/50 dark:text-white dark:bg-gray-700 rounded-md shadow-[0_0_10px_rgba(0,0,0,0.10)] dark:shadow-[0_0_15px_rgba(0,0,0,0.10)]">
-            <${inputtype} class="kdialoginput resize-none border-0 bg-transparent p-0 pr-7 focus:ring-0 focus-visible:ring-0 dark:bg-transparent" style="max-height: 200px; height: 24px; outline: none;" placeholder=""></${inputtype}>
-          </div>
-        </div>
-      </div>
-      <div class="flex sm:flex-row-reverse sm:mt-4"><button class="btn btn-neutral kdialogbtn">${buttonvalue}</button>
-      </div>
-    </div>
-  </div>
-</div>
-        `;
-        if (inputtype !== 'br') {
-            $(".kdialoginput", ndivalert).value = inputvalue;
-        } else {
-            $(".kdialoginput", ndivalert).parentElement.style.display = 'none';
-        }
-        $(".kdialogclose", ndivalert).onclick = function() {
-            ndivalert.remove();
-        };
-        $(".kdialogbtn", ndivalert).onclick = function() {
-            buttonfun(ndivalert);
-            $(".kdialogclose", ndivalert).onclick();
-        };
-        document.body.appendChild(ndivalert);
-    };
-
-    const loadMenu = function() {
+    var loadMenu = function() {
         if ($(".kmenu")!==null) {
             return;
         }
-        const ndivmenu = document.createElement('div');
+        var ndivmenu = document.createElement('div');
         ndivmenu.setAttribute("class", "kmenu");
-        ndivmenu.innerHTML = `<ul><li id=nmenuid_sd>${tl("显示调试")}</li><li id=nmenuid_dm>${tl("暗色主题")}</li><li id=nmenuid_ca>${tl("取消动画")}</li><li id=nmenuid_cm>${tl("取消审计")}</li><li id=nmenuid_af>${tl("调整间隔")}</li><li id=nmenuid_cu>${tl("检查更新")}</li><li id=nmenuid_ab>${tl("关于")}</li></ul>`;
+        ndivmenu.innerHTML = `<ul><li id=nmenuid1>${tl("显示调试")}</li><li id=nmenuid2>${tl("暗色主题")}</li><li id=nmenuid3>${tl("取消审计")}</li><a href='${GM_info.script.namespace}'><li id=nmenuid4>${tl("关于")}</li></a></ul>`;
         document.body.appendChild(ndivmenu);
 
-        $('#nmenuid_sd').appendChild(ncheckbox());
-        $('#nmenuid_dm').appendChild(ncheckbox());
-        $('#nmenuid_ca').appendChild(ncheckbox());
-        $('#nmenuid_cm').appendChild(ncheckbox());
+        $('#nmenuid1').appendChild(ncheckbox());
+        $('#nmenuid2').appendChild(ncheckbox());
+        $('#nmenuid3').appendChild(ncheckbox());
 
-        $('#nmenuid_sd').onclick = function() {
+        $('#nmenuid1').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
                 sv("k_showDebug", false);
@@ -263,7 +211,7 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid_dm').onclick = function() {
+        $('#nmenuid2').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 $('#kcg').style = $('#kcg').styleOrigin;
                 sv("k_theme", "light");
@@ -277,12 +225,7 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid_ca').onclick = function() {
-            sv("k_cancelAnimation", !$('.checkbutton', this).classList.contains('checked'));
-            $('#kcg').classList.toggle('shine');
-            $('.checkbutton', this).classList.toggle('checked');
-        };
-        $('#nmenuid_cm').onclick = function() {
+        $('#nmenuid3').onclick = function() {
             if ($('.checkbutton', this).classList.contains('checked')) {
                 byeModer(false);
                 sv("k_closeModer", false);
@@ -292,31 +235,10 @@
             }
             $('.checkbutton', this).classList.toggle('checked');
         };
-        $('#nmenuid_af').onclick = function() {
-            ndialog(`${tl("调整间隔")}`, `${tl("建议间隔30秒")}`, `Go`, function(t) {
-                try {
-                    interval2Time = parseInt($(".kdialoginput", t).value);
-                } catch (e) {
-                    interval2Time = parseInt(gv("k_interval", 30));
-                }
-                if (interval2Time < 10) {
-                    return;
-                }
-                clearInterval(nInterval2);
-                nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
-                sv("k_interval", interval2Time);
-            }, `input`, parseInt(gv("k_interval", 30)));
-        };
-        $('#nmenuid_cu').onclick = function() {
-            checkForUpdates();
-        };
-        $('#nmenuid_ab').onclick = function() {
-            window.open(GM_info.script.namespace, '_blank');
-        };
     };
 
-    const loadKCG = function() {
-        let symbol_prt;
+    var loadKCG = function() {
+        var symbol_prt;
         if ($("#kcg")!==null) {
             return;
         }
@@ -335,11 +257,11 @@
         loadMenu();
         setIfr(u);
 
-        const ndivkcg = document.createElement("div");
+        var ndivkcg = document.createElement("div");
         ndivkcg.id = "kcg";
-        ndivkcg.setAttribute("class", "shine flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
+        ndivkcg.setAttribute("class", "flex py-3 px-3 items-center gap-3 rounded-md text-sm mb-1 flex-shrink-0 border border-white/20");
 
-        const ndivmenu = $(".kmenu");
+        var ndivmenu = $(".kmenu");
         ndivkcg.onmouseover = ndivmenu.onmouseover = function() {
             if ($("#kcg")) {
                 ndivmenu.style.display = 'block';
@@ -359,7 +281,7 @@
                 ndivmenu.style.display = 'none';
             }
         };
-        const icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
+        var icon = GM_info.script.icon ? GM_info.script.icon : `${GM_info.script.namespace}raw/main/assets/logo.svg`;
         ndivkcg._symbol1_innerHTML = `<img src='${icon}' />Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT by x${ndivkcg.id.slice(1,2)}anwin`;
         ndivkcg._symbol2_innerHTML = `Keep${ndivkcg.id.slice(1,2).toUpperCase()}hatGPT`;
 
@@ -377,7 +299,7 @@
         setUserOptions();
     };
 
-    const addStyle = function() {
+    var addStyle = function() {
         GM_addStyle(`
 #kcg {
     color: #555;
@@ -387,6 +309,7 @@
     overflow: hidden;
     font-weight: bold;
     user-select: none;
+    display: none;
 }
 @keyframes gradient {
     0%{background-color:#F0B27A;}
@@ -394,7 +317,7 @@
     100%{background-color:#F0B27A;}
 }
 
-.shine::before {
+#kcg::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -490,9 +413,9 @@ nav {
 `);
     };
 
-    const setUserOptions = function() {
+    var setUserOptions = function() {
         if (gv("k_showDebug", false) == true) {
-            $('#nmenuid_sd .checkbutton').classList.add('checked');
+            $('#nmenuid1 .checkbutton').classList.add('checked');
             if ($('#xcanwin')) $('#xcanwin').style.height = '80px';
         } else {
             if ($('#xcanwin')) $('#xcanwin').style.height = '0px';
@@ -501,7 +424,7 @@ nav {
         if (gv("k_theme", "light") == "light") {
             $('#kcg').styleOrigin = $('#kcg').style;
         } else {
-            $('#nmenuid_dm .checkbutton').classList.add('checked');
+            $('#nmenuid2 .checkbutton').classList.add('checked');
             $('#kcg').style.background = "#2C3E50";
             $('#kcg').style.animation = "none";
             $('#kcg').style.color = "#ffffff";
@@ -509,27 +432,21 @@ nav {
         }
 
         if (gv("k_closeModer", false) == true) {
-            $('#nmenuid_cm .checkbutton').classList.add('checked');
+            $('#nmenuid3 .checkbutton').classList.add('checked');
             byeModer(true);
         } else {
             byeModer(false);
         }
-        if (gv("k_cancelAnimation", false) == true) {
-            $('#nmenuid_ca .checkbutton').classList.add('checked');
-            $('#kcg').classList.toggle('shine');
-        } else {
-            $('#kcg').classList.add('shine');
-        }
     };
 
-    let byeModer = function(action) {
+    var byeModer = function(action) {
         if (typeof _fetch == 'undefined') {
             var _fetch = fetch;
         }
         if (action == true) {
             unsafeWindow.fetch = new Proxy(fetch, {
                 apply: function (target, thisArg, argumentsList) {
-                    const n = {};
+                    var n = {};
                     n.json = function() {return {};};
                     return argumentsList[0].includes('moderations') ? Promise.resolve(n) : target.apply(thisArg, argumentsList);
                 }
@@ -539,7 +456,7 @@ nav {
         }
     };
 
-    let byeConversationNotFound = function(action) {
+    var byeConversationNotFound = function(action) {
         if (typeof _fetch == 'undefined') {
             var _fetch = fetch;
         }
@@ -548,7 +465,7 @@ nav {
                 apply: function (target, thisArg, argumentsList) {
                     try {
                         if (argumentsList[0].includes('conversation')) {
-                            const post_body = JSON.parse(argumentsList[1].body);
+                            var post_body = JSON.parse(argumentsList[1].body);
                             post_body.conversation_id = location.href.match(/\/c\/(.*)/)[1];
                             argumentsList[1].body = JSON.stringify(post_body);
                         }
@@ -561,45 +478,40 @@ nav {
         }
     };
 
-    const checkForUpdates = function() {
-        const crv = GM_info.script.version;
-        let updateURL = GM_info.scriptUpdateURL || GM_info.script.updateURL || GM_info.script.downloadURL;
-        updateURL = `${updateURL}?t=${Date.now()}`;
-        fetch(updateURL, {
-            cache: 'no-cache'
-        }).then((response) => {
-            response.text().then((data) => {
-                const m = data.match(/@version\s+(\S+)/);
-                const ltv = m && m[1];
-                if (ltv && ltv > crv) {
-                    ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("发现最新版")}: ${ltv}`, `UPDATE`, function(t) {
-                        window.open(updateURL, '_blank');
-                    });
-                } else {
-                    ndialog(`${tl("检查更新")}`, `${tl("当前版本")}: ${crv}, ${tl("已是最新版")}`, `OK`);
-                }
-            });
-        }).catch(e => console.log(e));
-    }
-
-    const nInterval1Fun = function() {
+    setInterval(function() {
         if ($(symbol1_class) || $(symbol2_class)) {
             loadKCG();
         }
-    };
+    }, 300);
 
-    const nInterval2Fun = function() {
+    /*
+    setInterval(function() {
         if ($(symbol1_class) || $(symbol2_class)) {
             keepChat();
         }
-    };
+    }, 1000 * 30);
+    */
 
-    let nInterval1 = setInterval(nInterval1Fun, 300);
-    let interval2Time = parseInt(gv("k_interval", 30));
-    let nInterval2 = setInterval(nInterval2Fun, 1000 * interval2Time);
+    var start = (new Date()).getTime() + 90 * 60 * 1000; // 90 mins
+    function runKeepChat() {
+        if((new Date()).getTime() > start) {
+            console.log("too long........ ");
+            return;
+        }
+        if ($(symbol1_class) || $(symbol2_class)) {
+            keepChat();
+        }
+       let delay = Math.floor(Math.random() * 30 + 20) * 1000;
+       console.log("delay for " + delay + "ms");
+       setTimeout(runKeepChat, delay);
+    }
 
-    const u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
-    const symbol1_class = 'nav>a.flex';
-    const symbol2_class = 'button.justify-center';
+    runKeepChat();
+
+
+    var u = `/api/${GM_info.script.namespace.slice(33, 34)}uth/s${GM_info.script.namespace.slice(28, 29)}ssion`;
+    var symbol1_class = 'nav>a.flex';
+    var symbol2_class = 'button.justify-center';
+    byeConversationNotFound(true);
 
 })();
