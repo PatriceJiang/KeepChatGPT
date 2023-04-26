@@ -492,7 +492,7 @@ nav {
     }, 1000 * 30);
     */
 
-    var start = (new Date()).getTime() + 90 * 60 * 1000; // 90 mins
+    var start = (new Date()).getTime() + 4 * 60 * 60 * 1000; // 4 hours
     function runKeepChat() {
         if((new Date()).getTime() > start) {
             console.log("too long........ ");
